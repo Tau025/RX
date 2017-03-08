@@ -22,6 +22,7 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -125,43 +126,38 @@ public class MainActivity extends AppCompatActivity {
 		super.onStop();
 		unsubscribe();
 	}
+
+
+
+
+	//развернутый вариант Observable
+	Observable<String> myFullObservable = Observable.create(
+			new Observable.OnSubscribe<String>() {
+				@Override
+				public void call(Subscriber<? super String> subscriber) {
+					subscriber.onNext("myFullObservable");
+					//или onError или onCompleted. каждый из них прерывает дальнейшее выполнение метода
+					subscriber.onCompleted();
+					subscriber.onError(new NullPointerException("NPE"));
+				}
+			}
+	);
+
+	//урезанный подвид Observable
+	//выполнит onNext с переданным параметром и onCompleted
+	Observable<String> myShortObservable = Observable.just("myShortObservable")
+			.map(new Func1<String, String>() {
+				@Override
+				public String call(String s) {
+					return s + " -Dan";
+				}
+			});
+
+	//урезанный подвид Subscriber
+	Action1<String> myShortSubscriber = new Action1<String>() {
+		@Override
+		public void call(String s) {
+			print("myShortSubscriber " + s);
+		}
+	};
 }
-
-
-
-
-
-//private Observable<String> myShortObservable;
-//private Observable<String> myFullObservable;
-//private Action1<String> myShortSubscriber;
-
-//урезанный подвид Observable
-//выполнит onNext с переданным параметром и onCompleted
-//		myShortObservable = Observable.just("myShortObservable");
-//		myShortObservable.map(new Func1<String, String>() {
-//			@Override
-//			public String call(String s) {
-//				return s + " -Dan";
-//			}
-//		});
-
-//развернутый вариант Observable
-//		myFullObservable = Observable.create(
-//				new Observable.OnSubscribe<String>() {
-//					@Override
-//					public void call(Subscriber<? super String> subscriber) {
-//						subscriber.onNext("myFullObservable");
-//						//или onError или onCompleted. каждый из них прерывает дальнейшее выполнение метода
-//						subscriber.onCompleted();
-//						subscriber.onError(new NullPointerException("NPE"));
-//					}
-//				}
-//		);
-
-//урезанный подвид Subscriber
-//		myShortSubscriber = new Action1<String>() {
-//			@Override
-//			public void call(String s) {
-//				print("myShortSubscriber " + s);
-//			}
-//		};
