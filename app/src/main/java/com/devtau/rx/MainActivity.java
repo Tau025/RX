@@ -100,12 +100,13 @@ public class MainActivity extends AppCompatActivity {
 		searchViewObservable = RxSearchView.queryTextChanges(searchView)
 				.debounce(DEBOUNCE_RATE, TimeUnit.MILLISECONDS)
 				.observeOn(AndroidSchedulers.mainThread())
-				.map(new Func1<CharSequence, String>() {
-					@Override
-					public String call(CharSequence charSequence) {
-						return charSequence.toString();
-					}
-				});
+				.map(CharSequence::toString);
+//				.map(new Func1<CharSequence, String>() {
+//					@Override
+//					public String call(CharSequence charSequence) {
+//						return charSequence.toString();
+//					}
+//				});
 		return true;
 	}
 
